@@ -1,0 +1,91 @@
+<Window x:Class="LAB_PI_1.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="РњРµРЅРµРґР¶РµСЂ РїСЂРёРІС‹С‡РµРє" Height="720" Width="760" MinHeight="600" MinWidth="700">
+    <DockPanel x:Name="RootPanel" Background="#F4F6FA">
+        <StatusBar DockPanel.Dock="Bottom">
+            <StatusBarItem>
+                <TextBlock x:Name="StatusTextBlock" Text="Р“РѕС‚РѕРІРѕ"/>
+            </StatusBarItem>
+            <Separator/>
+            <StatusBarItem>
+                <TextBlock x:Name="ProfileSummaryTextBlock" Text="РџСЂРѕС„РёР»СЊ РЅРµ СЃРѕС…СЂР°РЅРµРЅ"/>
+            </StatusBarItem>
+        </StatusBar>
+        <Border Margin="12" Padding="8" BorderBrush="#CCD4E0" BorderThickness="1" Background="White">
+            <TabControl x:Name="MainTabControl" SelectionChanged="MainTabControl_SelectionChanged">
+                <TabItem Header="Р›РёС‡РЅС‹Рµ РґР°РЅРЅС‹Рµ">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel>
+                            <GroupBox Header="РћСЃРЅРѕРІРЅР°СЏ РёРЅС„РѕСЂРјР°С†РёСЏ">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="120"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Label Grid.Row="0" Grid.Column="0" Content="РРјСЏ"/>
+                                    <TextBox x:Name="FirstNameTextBox" Grid.Row="0" Grid.Column="1" Margin="0,4"/>
+                                    <Label Grid.Row="1" Grid.Column="0" Content="Р¤Р°РјРёР»РёСЏ"/>
+                                    <TextBox x:Name="LastNameTextBox" Grid.Row="1" Grid.Column="1" Margin="0,4"/>
+                                    <Label Grid.Row="2" Grid.Column="0" Content="РџР°СЂРѕР»СЊ"/>
+                                    <PasswordBox x:Name="PasswordInputBox" Grid.Row="2" Grid.Column="1" Margin="0,4"/>
+                                    <Label Grid.Row="3" Grid.Column="0" Content="Р”Р°С‚Р° СЂРѕР¶РґРµРЅРёСЏ"/>
+                                    <DatePicker x:Name="BirthDatePicker" Grid.Row="3" Grid.Column="1" Margin="0,4"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Рµ РґР°РЅРЅС‹Рµ">
+                                <StackPanel>
+                                    <TextBlock Text="РћР±СЂР°Р·РѕРІР°РЅРёРµ"/>
+                                    <ComboBox x:Name="EducationComboBox" Margin="0,4,0,10">
+                                        <ComboBoxItem Content="РЎСЂРµРґРЅРµРµ"/>
+                                        <ComboBoxItem Content="РЎСЂРµРґРЅРµРµ СЃРїРµС†РёР°Р»СЊРЅРѕРµ"/>
+                                        <ComboBoxItem Content="Р’С‹СЃС€РµРµ"/>
+                                        <ComboBoxItem Content="РђСЃРїРёСЂР°РЅС‚СѓСЂР°"/>
+                                    </ComboBox>
+                                    <TextBlock Text="РҐРѕР±Р±Рё"/>
+                                    <ListBox x:Name="HobbiesListBox" SelectionMode="Multiple" Height="115">
+                                        <ListBoxItem Content="РЎРїРѕСЂС‚"/>
+                                        <ListBoxItem Content="Р§С‚РµРЅРёРµ"/>
+                                        <ListBoxItem Content="РњСѓР·С‹РєР°"/>
+                                        <ListBoxItem Content="РџСЂРѕРіСЂР°РјРјРёСЂРѕРІР°РЅРёРµ"/>
+                                        <ListBoxItem Content="РџСѓС‚РµС€РµСЃС‚РІРёСЏ"/>
+                                    </ListBox>
+                                </StackPanel>
+                            </GroupBox>
+                            <GroupBox x:Name="DisplaySettingsGroupBox" Header="РќР°СЃС‚СЂРѕР№РєРё РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ">
+                                <StackPanel>
+                                    <CheckBox x:Name="NotificationsCheckBox" Content="РџРѕР»СѓС‡Р°С‚СЊ СѓРІРµРґРѕРјР»РµРЅРёСЏ" Margin="0,3"/>
+                                    <CheckBox x:Name="PublicStatsCheckBox" Content="РџРѕРєР°Р·С‹РІР°С‚СЊ СЃС‚Р°С‚РёСЃС‚РёРєСѓ РїСѓР±Р»РёС‡РЅРѕ" Margin="0,3"/>
+                                    <CheckBox x:Name="AutoSaveCheckBox" Content="РђРІС‚РѕСЃРѕС…СЂР°РЅРµРЅРёРµ" Margin="0,3"/>
+                                    <CheckBox x:Name="WeeklyReportCheckBox" Content="Р•Р¶РµРЅРµРґРµР»СЊРЅС‹Р№ РѕС‚С‡РµС‚" Margin="0,3"/>
+                                    <TextBlock Text="РЈСЂРѕРІРµРЅСЊ Р°РєС‚РёРІРЅРѕСЃС‚Рё" Margin="0,10,0,3"/>
+                                    <WrapPanel>
+                                        <RadioButton x:Name="LowActivityRadioButton" Content="РќРёР·РєРёР№" GroupName="Activity" Margin="0,0,14,0"/>
+                                        <RadioButton x:Name="MediumActivityRadioButton" Content="РЎСЂРµРґРЅРёР№" GroupName="Activity" Margin="0,0,14,0" IsChecked="True"/>
+                                        <RadioButton x:Name="HighActivityRadioButton" Content="Р’С‹СЃРѕРєРёР№" GroupName="Activity"/>
+                                    </WrapPanel>
+                                </StackPanel>
+                            </GroupBox>
+                            <WrapPanel HorizontalAlignment="Right">
+                                <Button Content="РЎРѕС…СЂР°РЅРёС‚СЊ" Style="{StaticResource PrimaryButtonStyle}" Click="SaveButton_Click"/>
+                                <Button Content="РЎР±СЂРѕСЃ" Style="{StaticResource SecondaryButtonStyle}" Click="ResetButton_Click"/>
+                            </WrapPanel>
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+                <TabItem Header="РџСЂРёРІС‹С‡РєРё">
+                    <TextBlock Margin="12" Text="Р Р°Р·РґРµР» РїСЂРёРІС‹С‡РµРє Р±СѓРґРµС‚ РґРѕР±Р°РІР»РµРЅ РІРѕ РІС‚РѕСЂРѕР№ Р·Р°РґР°С‡Рµ."/>
+                </TabItem>
+                <TabItem Header="РЎС‚Р°С‚РёСЃС‚РёРєР°">
+                    <TextBlock Margin="12" Text="Р Р°Р·РґРµР» СЃС‚Р°С‚РёСЃС‚РёРєРё Р±СѓРґРµС‚ РґРѕР±Р°РІР»РµРЅ РІ С‚СЂРµС‚СЊРµР№ Р·Р°РґР°С‡Рµ."/>
+                </TabItem>
+            </TabControl>
+        </Border>
+    </DockPanel>
+</Window>
