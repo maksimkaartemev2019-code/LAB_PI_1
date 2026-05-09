@@ -3,7 +3,12 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using LAB_PI_1.Models;
+using Microsoft.Win32;
 
 namespace LAB_PI_1;
 
@@ -16,6 +21,11 @@ public partial class MainWindow : Window
     /// Stores habits displayed in data grids.
     /// </summary>
     private readonly ObservableCollection<HabitEntry> habits = [];
+
+    /// <summary>
+    /// Stores daily statistic rows displayed in list views.
+    /// </summary>
+    private readonly ObservableCollection<DailyStatistic> statistics = [];
 
     /// <summary>
     /// Stores the latest saved user profile.
@@ -39,18 +49,25 @@ public partial class MainWindow : Window
         HabitCalendar.SelectedDate = DateTime.Today;
         HabitCalendar.DisplayDate = DateTime.Today;
         UpdateProgress();
-        SetStatus("РџСЂРёР»РѕР¶РµРЅРёРµ Р·Р°РїСѓС‰РµРЅРѕ");
+        SetStatus("Приложение запущено");
     }
 
     /// <summary>
-    /// Adds starter habits for the first application run.
+    /// Adds starter habits and statistics for the first application run.
     /// </summary>
     private void SeedDemoData()
     {
-        habits.Add(new HabitEntry { Name = "Р’С‹РїРёС‚СЊ РІРѕРґСѓ", Time = "09:00", IsCompleted = true });
-        habits.Add(new HabitEntry { Name = "РџСЂРѕС‡РёС‚Р°С‚СЊ 20 СЃС‚СЂР°РЅРёС†", Time = "20:00", IsCompleted = false });
-        habits.Add(new HabitEntry { Name = "РџСЂРѕРіСѓР»РєР°", Time = "18:30", IsCompleted = true });
+        habits.Add(new HabitEntry { Name = "Выпить воду", Time = "09:00", IsCompleted = true });
+        habits.Add(new HabitEntry { Name = "Прочитать 20 страниц", Time = "20:00", IsCompleted = false });
+        habits.Add(new HabitEntry { Name = "Прогулка", Time = "18:30", IsCompleted = true });
+
+        statistics.Add(new DailyStatistic { Day = "Понедельник", Completed = 5, Total = 7 });
+        statistics.Add(new DailyStatistic { Day = "Вторник", Completed = 4, Total = 7 });
+        statistics.Add(new DailyStatistic { Day = "Среда", Completed = 6, Total = 7 });
+        statistics.Add(new DailyStatistic { Day = "Сегодня", Completed = habits.Count(item => item.IsCompleted), Total = habits.Count });
+
         HabitsDataGrid.ItemsSource = habits;
+        StatisticsListView.ItemsSource = statistics;
     }
 
     /// <summary>
@@ -59,6 +76,84 @@ public partial class MainWindow : Window
     private void SaveButton_Click(object sender, RoutedEventArgs e)
     {
         SaveProfile();
+    }
+
+    /// <summary>
+    /// Handles save commands from the menu and toolbar.
+    /// </summary>
+    private void SaveMenuItem_Click(object sender, RoutedEventArgs e)
+    {
+        SaveProfile();
+    }
+
+    /// <summary>
+    /// Simulates loading previously saved profile data.
+    /// </summary>
+    private void LoadMenuItem_Click(object sender, RoutedEventArgs e)
+    {
+        FirstNameTextBox.Text = savedProfile.FirstName;
+        LastNameTextBox.Text = savedProfile.LastName;
+        PasswordInputBox.Password = savedProfile.Password;
+        BirthDatePicker.SelectedDate = savedProfile.BirthDate;
+        SetComboBoxValue(EducationComboBox, savedProfile.Education);
+        NotificationsCheckBox.IsChecked = savedProfile.ReceiveNotifications;
+        PublicStatsCheckBox.IsChecked = savedProfile.ShowPublicStatistics;
+        AutoSaveCheckBox.IsChecked = savedProfile.AutoSave;
+        WeeklyReportCheckBox.IsChecked = savedProfile.WeeklyReport;
+        SelectActivity(savedProfile.ActivityLevel);
+        SetStatus("Данные загружены из объекта UserProfile");
+    }
+
+    /// <summary>
+    /// Closes the application from the menu.
+    /// </summary>
+    private void ExitMenuItem_Click(object sender, RoutedEventArgs e)
+    {
+        Close();
+    }
+
+    /// <summary>
+    /// Copies selected text from the focused text box if possible.
+    /// </summary>
+    private void CopyMenuItem_Click(object sender, RoutedEventArgs e)
+    {
+        if (Keyboard.FocusedElement is TextBox textBox)
+        {
+            textBox.Copy();
+            SetStatus("Текст скопирован");
+        }
+    }
+
+    /// <summary>
+    /// Pastes clipboard text into the focused text box if possible.
+    /// </summary>
+    private void PasteMenuItem_Click(object sender, RoutedEventArgs e)
+    {
+        if (Keyboard.FocusedElement is TextBox textBox)
+        {
+            textBox.Paste();
+            SetStatus("Текст вставлен");
+        }
+    }
+
+    /// <summary>
+    /// Applies a light visual theme to the window.
+    /// </summary>
+    private void LightThemeMenuItem_Click(object sender, RoutedEventArgs e)
+    {
+        RootPanel.Background = new SolidColorBrush(Color.FromRgb(244, 246, 250));
+        Foreground = Brushes.Black;
+        SetStatus("Включена светлая тема");
+    }
+
+    /// <summary>
+    /// Applies a dark visual theme to the window.
+    /// </summary>
+    private void DarkThemeMenuItem_Click(object sender, RoutedEventArgs e)
+    {
+        RootPanel.Background = new SolidColorBrush(Color.FromRgb(38, 45, 56));
+        Foreground = Brushes.White;
+        SetStatus("Включена темная тема");
     }
 
     /// <summary>
@@ -77,8 +172,8 @@ public partial class MainWindow : Window
         AutoSaveCheckBox.IsChecked = false;
         WeeklyReportCheckBox.IsChecked = false;
         MediumActivityRadioButton.IsChecked = true;
-        ProfileSummaryTextBlock.Text = "РџСЂРѕС„РёР»СЊ РЅРµ СЃРѕС…СЂР°РЅРµРЅ";
-        SetStatus("РџРѕР»СЏ РѕС‡РёС‰РµРЅС‹");
+        ProfileSummaryTextBlock.Text = "Профиль не сохранен";
+        SetStatus("Поля очищены");
     }
 
     /// <summary>
@@ -89,13 +184,14 @@ public partial class MainWindow : Window
         var habitName = NewHabitTextBox.Text.Trim();
         if (string.IsNullOrWhiteSpace(habitName))
         {
-            MessageBox.Show("Р’РІРµРґРёС‚Рµ РЅР°Р·РІР°РЅРёРµ РїСЂРёРІС‹С‡РєРё.", "РџСЂРѕРІРµСЂРєР°", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show("Введите название привычки.", "Проверка", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
 
         habits.Add(new HabitEntry { Name = habitName, Time = DateTime.Now.ToString("HH:mm"), IsCompleted = false });
         NewHabitTextBox.Clear();
-        SetStatus($"Р”РѕР±Р°РІР»РµРЅР° РїСЂРёРІС‹С‡РєР°: {habitName}");
+        RefreshTodayStatistic();
+        SetStatus($"Добавлена привычка: {habitName}");
     }
 
     /// <summary>
@@ -107,14 +203,40 @@ public partial class MainWindow : Window
     }
 
     /// <summary>
+    /// Decreases both sliders by five points.
+    /// </summary>
+    private void DecreaseProgressButton_Click(object sender, RoutedEventArgs e)
+    {
+        ProductivitySlider.Value = Math.Max(ProductivitySlider.Minimum, ProductivitySlider.Value - 5);
+        SatisfactionSlider.Value = Math.Max(SatisfactionSlider.Minimum, SatisfactionSlider.Value - 5);
+    }
+
+    /// <summary>
+    /// Increases both sliders by five points.
+    /// </summary>
+    private void IncreaseProgressButton_Click(object sender, RoutedEventArgs e)
+    {
+        ProductivitySlider.Value = Math.Min(ProductivitySlider.Maximum, ProductivitySlider.Value + 5);
+        SatisfactionSlider.Value = Math.Min(SatisfactionSlider.Maximum, SatisfactionSlider.Value + 5);
+    }
+
+    /// <summary>
     /// Updates the status bar when a calendar date is selected.
     /// </summary>
     private void HabitCalendar_SelectedDatesChanged(object sender, SelectionChangedEventArgs e)
     {
         if (HabitCalendar.SelectedDate is DateTime selectedDate)
         {
-            SetStatus($"Р’С‹Р±СЂР°РЅ РґРµРЅСЊ: {selectedDate:dd.MM.yyyy}");
+            SetStatus($"Выбран день: {selectedDate:dd.MM.yyyy}");
         }
+    }
+
+    /// <summary>
+    /// Refreshes statistics after a habit checkbox value changes.
+    /// </summary>
+    private void HabitsDataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+    {
+        Dispatcher.BeginInvoke(RefreshTodayStatistic);
     }
 
     /// <summary>
@@ -124,8 +246,38 @@ public partial class MainWindow : Window
     {
         if (MainTabControl.SelectedItem is TabItem tabItem)
         {
-            SetStatus($"РћС‚РєСЂС‹С‚Р° РІРєР»Р°РґРєР°: {tabItem.Header}");
+            SetStatus($"Открыта вкладка: {tabItem.Header}");
         }
+    }
+
+    /// <summary>
+    /// Loads an avatar image through a standard file dialog.
+    /// </summary>
+    private void LoadAvatarButton_Click(object sender, RoutedEventArgs e)
+    {
+        var dialog = new OpenFileDialog
+        {
+            Title = "Выберите аватар",
+            Filter = "Изображения|*.png;*.jpg;*.jpeg;*.bmp|Все файлы|*.*"
+        };
+
+        if (dialog.ShowDialog(this) == true)
+        {
+            AvatarImage.Source = new BitmapImage(new Uri(dialog.FileName));
+            AvatarPlaceholderTextBlock.Visibility = Visibility.Collapsed;
+            SetStatus("Аватар загружен");
+        }
+    }
+
+    /// <summary>
+    /// Shows or hides the additional settings group.
+    /// </summary>
+    private void EditModeToggleButton_Changed(object sender, RoutedEventArgs e)
+    {
+        DisplaySettingsGroupBox.Visibility = EditModeToggleButton.IsChecked == true
+            ? Visibility.Visible
+            : Visibility.Collapsed;
+        SetStatus(EditModeToggleButton.IsChecked == true ? "Режим редактирования включен" : "Дополнительная панель скрыта");
     }
 
     /// <summary>
@@ -161,7 +313,7 @@ public partial class MainWindow : Window
         }
 
         ProfileSummaryTextBlock.Text = $"{savedProfile.FirstName} {savedProfile.LastName}, {savedProfile.ActivityLevel}";
-        SetStatus("РџСЂРѕС„РёР»СЊ СЃРѕС…СЂР°РЅРµРЅ РІ РѕР±СЉРµРєС‚ UserProfile");
+        SetStatus("Профиль сохранен в объект UserProfile");
     }
 
     /// <summary>
@@ -171,13 +323,13 @@ public partial class MainWindow : Window
     {
         if (string.IsNullOrWhiteSpace(FirstNameTextBox.Text) || string.IsNullOrWhiteSpace(LastNameTextBox.Text))
         {
-            MessageBox.Show("РРјСЏ Рё С„Р°РјРёР»РёСЏ РЅРµ РґРѕР»Р¶РЅС‹ Р±С‹С‚СЊ РїСѓСЃС‚С‹РјРё.", "РћС€РёР±РєР° РІР°Р»РёРґР°С†РёРё", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show("Имя и фамилия не должны быть пустыми.", "Ошибка валидации", MessageBoxButton.OK, MessageBoxImage.Warning);
             return false;
         }
 
         if (BirthDatePicker.SelectedDate is DateTime birthDate && birthDate.Date > DateTime.Today)
         {
-            MessageBox.Show("Р”Р°С‚Р° СЂРѕР¶РґРµРЅРёСЏ РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РІ Р±СѓРґСѓС‰РµРј.", "РћС€РёР±РєР° РІР°Р»РёРґР°С†РёРё", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show("Дата рождения не может быть в будущем.", "Ошибка валидации", MessageBoxButton.OK, MessageBoxImage.Warning);
             return false;
         }
 
@@ -200,6 +352,26 @@ public partial class MainWindow : Window
     }
 
     /// <summary>
+    /// Recalculates the row that represents today's progress.
+    /// </summary>
+    private void RefreshTodayStatistic()
+    {
+        var today = statistics.FirstOrDefault(item => item.Day == "Сегодня");
+        if (today is null)
+        {
+            return;
+        }
+
+        var index = statistics.IndexOf(today);
+        statistics[index] = new DailyStatistic
+        {
+            Day = "Сегодня",
+            Completed = habits.Count(item => item.IsCompleted),
+            Total = habits.Count
+        };
+    }
+
+    /// <summary>
     /// Sets the current status bar message.
     /// </summary>
     private void SetStatus(string message)
@@ -214,9 +386,30 @@ public partial class MainWindow : Window
     {
         if (LowActivityRadioButton.IsChecked == true)
         {
-            return "РќРёР·РєРёР№";
+            return "Низкий";
         }
 
-        return HighActivityRadioButton.IsChecked == true ? "Р’С‹СЃРѕРєРёР№" : "РЎСЂРµРґРЅРёР№";
+        return HighActivityRadioButton.IsChecked == true ? "Высокий" : "Средний";
+    }
+
+    /// <summary>
+    /// Selects an activity radio button by level text.
+    /// </summary>
+    private void SelectActivity(string activityLevel)
+    {
+        LowActivityRadioButton.IsChecked = activityLevel == "Низкий";
+        MediumActivityRadioButton.IsChecked = activityLevel == "Средний";
+        HighActivityRadioButton.IsChecked = activityLevel == "Высокий";
+    }
+
+    /// <summary>
+    /// Selects a combo box item by displayed value.
+    /// </summary>
+    private static void SetComboBoxValue(ComboBox comboBox, string value)
+    {
+        foreach (ComboBoxItem item in comboBox.Items)
+        {
+            item.IsSelected = item.Content?.ToString() == value;
+        }
     }
 }

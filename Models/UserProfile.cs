@@ -61,5 +61,5 @@ public sealed class UserProfile
     /// <summary>
     /// Gets or sets the selected activity level.
     /// </summary>
-    public string ActivityLevel { get; set; } = "РЎСЂРµРґРЅРёР№";
+    public string ActivityLevel { get; set; } = "Средний";
 }
