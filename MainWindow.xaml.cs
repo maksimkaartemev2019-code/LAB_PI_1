@@ -274,6 +274,11 @@ public partial class MainWindow : Window
     /// </summary>
     private void EditModeToggleButton_Changed(object sender, RoutedEventArgs e)
     {
+        if (DisplaySettingsGroupBox is null || EditModeToggleButton is null)
+        {
+            return;
+        }
+
         DisplaySettingsGroupBox.Visibility = EditModeToggleButton.IsChecked == true
             ? Visibility.Visible
             : Visibility.Collapsed;
@@ -341,7 +346,10 @@ public partial class MainWindow : Window
     /// </summary>
     private void UpdateProgress()
     {
-        if (DayProgressBar is null || ProgressValueTextBlock is null)
+        if (ProductivitySlider is null
+            || SatisfactionSlider is null
+            || DayProgressBar is null
+            || ProgressValueTextBlock is null)
         {
             return;
         }
@@ -376,6 +384,11 @@ public partial class MainWindow : Window
     /// </summary>
     private void SetStatus(string message)
     {
+        if (StatusTextBlock is null)
+        {
+            return;
+        }
+
         StatusTextBlock.Text = message;
     }
 
