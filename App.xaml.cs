@@ -1,10 +1,8 @@
-using System.Windows;
+﻿using System.Windows;
 
 namespace LAB_PI_1;
 
-/// <summary>
-/// Defines the application entry point and shared WPF resources.
-/// </summary>
+// Класс запускает WPF-приложение и хранит общие ресурсы.
 public partial class App : Application
 {
 }

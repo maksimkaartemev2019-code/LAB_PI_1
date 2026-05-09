@@ -1,4 +1,4 @@
-<Window x:Class="LAB_PI_1.MainWindow"
+﻿<Window x:Class="LAB_PI_1.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Менеджер привычек" Height="760" Width="1180"
@@ -31,7 +31,7 @@
                           Content="Режим редактирования"
                           Margin="4"
                           Padding="12,6"
-                          IsChecked="True"
+                          IsChecked="False"
                           Checked="EditModeToggleButton_Changed"
                           Unchecked="EditModeToggleButton_Changed"/>
         </ToolBar>
@@ -101,12 +101,12 @@
                                     </StackPanel>
                                 </GroupBox>
 
-                                <GroupBox x:Name="DisplaySettingsGroupBox" Header="Настройки отображения">
+                                <GroupBox x:Name="DisplaySettingsGroupBox" Header="Настройки отображения" Visibility="Collapsed">
                                     <StackPanel>
-                                        <CheckBox x:Name="NotificationsCheckBox" Content="Получать уведомления" Margin="0,3"/>
-                                        <CheckBox x:Name="PublicStatsCheckBox" Content="Показывать статистику публично" Margin="0,3"/>
-                                        <CheckBox x:Name="AutoSaveCheckBox" Content="Автосохранение" Margin="0,3"/>
-                                        <CheckBox x:Name="WeeklyReportCheckBox" Content="Еженедельный отчет" Margin="0,3"/>
+                                        <CheckBox x:Name="NotificationsCheckBox" Content="Получать уведомления" Margin="0,3" Checked="DisplaySetting_Changed" Unchecked="DisplaySetting_Changed"/>
+                                        <CheckBox x:Name="PublicStatsCheckBox" Content="Показывать статистику публично" Margin="0,3" Checked="DisplaySetting_Changed" Unchecked="DisplaySetting_Changed"/>
+                                        <CheckBox x:Name="AutoSaveCheckBox" Content="Автосохранение" Margin="0,3" Checked="DisplaySetting_Changed" Unchecked="DisplaySetting_Changed"/>
+                                        <CheckBox x:Name="WeeklyReportCheckBox" Content="Еженедельный отчет" Margin="0,3" Checked="DisplaySetting_Changed" Unchecked="DisplaySetting_Changed"/>
                                         <TextBlock Text="Уровень активности" Margin="0,10,0,3"/>
                                         <WrapPanel>
                                             <RadioButton x:Name="LowActivityRadioButton" Content="Низкий" GroupName="Activity" Margin="0,0,14,0"/>
@@ -131,6 +131,7 @@
                                     <DockPanel>
                                         <TextBox x:Name="NewHabitTextBox" DockPanel.Dock="Left" MinWidth="180" Margin="0,0,8,0"/>
                                         <Button Content="Добавить" Style="{StaticResource PrimaryButtonStyle}" Click="AddHabitButton_Click"/>
+                                        <Button Content="Удалить выбранную" Style="{StaticResource SecondaryButtonStyle}" Click="DeleteHabitButton_Click"/>
                                     </DockPanel>
                                 </GroupBox>
                                 <GroupBox Header="Ежедневная оценка">
@@ -256,8 +257,8 @@
                         </Grid>
                     </Border>
                     <Button Content="Загрузить аватар" Style="{StaticResource SecondaryButtonStyle}" Click="LoadAvatarButton_Click"/>
-                    <TextBlock Text="Быстрая статистика" FontWeight="SemiBold" Margin="0,18,0,6"/>
-                    <ListView ItemsSource="{Binding ElementName=StatisticsListView, Path=ItemsSource}" Height="210">
+                    <TextBlock x:Name="QuickStatsTitleTextBlock" Text="Быстрая статистика" FontWeight="SemiBold" Margin="0,18,0,6"/>
+                    <ListView x:Name="QuickStatsListView" ItemsSource="{Binding ElementName=StatisticsListView, Path=ItemsSource}" Height="210">
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn Header="День" DisplayMemberBinding="{Binding Day}" Width="90"/>

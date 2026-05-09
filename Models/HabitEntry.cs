@@ -1,22 +1,14 @@
-namespace LAB_PI_1.Models;
+﻿namespace LAB_PI_1.Models;
 
-/// <summary>
-/// Represents one habit row in the habit table.
-/// </summary>
+// Класс описывает одну привычку в таблице.
 public sealed class HabitEntry
 {
-    /// <summary>
-    /// Gets or sets the habit title.
-    /// </summary>
+    // Название привычки.
     public string Name { get; set; } = string.Empty;
 
-    /// <summary>
-    /// Gets or sets the planned habit time.
-    /// </summary>
+    // Запланированное время выполнения.
     public string Time { get; set; } = string.Empty;
 
-    /// <summary>
-    /// Gets or sets a value indicating whether the habit is completed.
-    /// </summary>
+    // Признак выполнения привычки.
     public bool IsCompleted { get; set; }
 }
