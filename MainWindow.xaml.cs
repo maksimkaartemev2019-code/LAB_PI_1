@@ -1,4 +1,6 @@
 using System;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using LAB_PI_1.Models;
@@ -11,6 +13,11 @@ namespace LAB_PI_1;
 public partial class MainWindow : Window
 {
     /// <summary>
+    /// Stores habits displayed in data grids.
+    /// </summary>
+    private readonly ObservableCollection<HabitEntry> habits = [];
+
+    /// <summary>
     /// Stores the latest saved user profile.
     /// </summary>
     private UserProfile savedProfile = new();
@@ -21,6 +28,29 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        SeedDemoData();
+    }
+
+    /// <summary>
+    /// Initializes date-dependent controls after the window is loaded.
+    /// </summary>
+    private void Window_Loaded(object sender, RoutedEventArgs e)
+    {
+        HabitCalendar.SelectedDate = DateTime.Today;
+        HabitCalendar.DisplayDate = DateTime.Today;
+        UpdateProgress();
+        SetStatus("РџСЂРёР»РѕР¶РµРЅРёРµ Р·Р°РїСѓС‰РµРЅРѕ");
+    }
+
+    /// <summary>
+    /// Adds starter habits for the first application run.
+    /// </summary>
+    private void SeedDemoData()
+    {
+        habits.Add(new HabitEntry { Name = "Р’С‹РїРёС‚СЊ РІРѕРґСѓ", Time = "09:00", IsCompleted = true });
+        habits.Add(new HabitEntry { Name = "РџСЂРѕС‡РёС‚Р°С‚СЊ 20 СЃС‚СЂР°РЅРёС†", Time = "20:00", IsCompleted = false });
+        habits.Add(new HabitEntry { Name = "РџСЂРѕРіСѓР»РєР°", Time = "18:30", IsCompleted = true });
+        HabitsDataGrid.ItemsSource = habits;
     }
 
     /// <summary>
@@ -49,6 +79,42 @@ public partial class MainWindow : Window
         MediumActivityRadioButton.IsChecked = true;
         ProfileSummaryTextBlock.Text = "РџСЂРѕС„РёР»СЊ РЅРµ СЃРѕС…СЂР°РЅРµРЅ";
         SetStatus("РџРѕР»СЏ РѕС‡РёС‰РµРЅС‹");
+    }
+
+    /// <summary>
+    /// Adds a new habit from the input field to the habit table.
+    /// </summary>
+    private void AddHabitButton_Click(object sender, RoutedEventArgs e)
+    {
+        var habitName = NewHabitTextBox.Text.Trim();
+        if (string.IsNullOrWhiteSpace(habitName))
+        {
+            MessageBox.Show("Р’РІРµРґРёС‚Рµ РЅР°Р·РІР°РЅРёРµ РїСЂРёРІС‹С‡РєРё.", "РџСЂРѕРІРµСЂРєР°", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        habits.Add(new HabitEntry { Name = habitName, Time = DateTime.Now.ToString("HH:mm"), IsCompleted = false });
+        NewHabitTextBox.Clear();
+        SetStatus($"Р”РѕР±Р°РІР»РµРЅР° РїСЂРёРІС‹С‡РєР°: {habitName}");
+    }
+
+    /// <summary>
+    /// Updates progress after productivity or satisfaction slider changes.
+    /// </summary>
+    private void HabitSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+    {
+        UpdateProgress();
+    }
+
+    /// <summary>
+    /// Updates the status bar when a calendar date is selected.
+    /// </summary>
+    private void HabitCalendar_SelectedDatesChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (HabitCalendar.SelectedDate is DateTime selectedDate)
+        {
+            SetStatus($"Р’С‹Р±СЂР°РЅ РґРµРЅСЊ: {selectedDate:dd.MM.yyyy}");
+        }
     }
 
     /// <summary>
@@ -116,6 +182,21 @@ public partial class MainWindow : Window
         }
 
         return true;
+    }
+
+    /// <summary>
+    /// Updates the progress bar using average slider values.
+    /// </summary>
+    private void UpdateProgress()
+    {
+        if (DayProgressBar is null || ProgressValueTextBlock is null)
+        {
+            return;
+        }
+
+        var progress = (ProductivitySlider.Value + SatisfactionSlider.Value) / 2;
+        DayProgressBar.Value = progress;
+        ProgressValueTextBlock.Text = $"{progress:0}%";
     }
 
     /// <summary>
